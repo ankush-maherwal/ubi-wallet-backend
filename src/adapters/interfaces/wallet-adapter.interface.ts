@@ -1,18 +1,30 @@
 export interface OnboardUserDto {
-  name: string;
-  phone: string;
+  firstName: string;
+  lastName: string;
   externalUserId: string;
+  username: string;
+  password: string;
+  email?: string;
+  phone?: string;
 }
 
 export interface OnboardedUserResponse {
   accountId: string;
   token: string;
   did?: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    accountId: string;
+    status: string;
+  };
 }
 
 export interface LoginRequestDto {
-  email: string;
-  deviceInfo?: string;
+  username: string;
+  password: string;
 }
 
 export interface LoginVerifyDto {
@@ -21,8 +33,13 @@ export interface LoginVerifyDto {
 }
 
 export interface LoginResponse {
-  sessionId: string;
+  statusCode: number;
   message: string;
+  data: {
+    token: string;
+    accountId: string;
+    user: any;
+  };
 }
 
 export interface LoginVerifyResponse {
@@ -47,10 +64,14 @@ export interface VCListResponse {
 }
 
 export interface VCDetailsResponse {
-  id: string;
-  type: string;
-  issuer: string;
-  credentialSubject: any;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    type: string;
+    issuer: string;
+    credentialSubject: any;
+  };
 }
 
 export interface UploadResponse {
@@ -61,9 +82,17 @@ export interface UploadResponse {
 export interface IWalletAdapter {
   onboardUser(data: OnboardUserDto): Promise<OnboardedUserResponse>;
   login(data: LoginRequestDto): Promise<LoginResponse>;
-  getAllVCs(accountId: string): Promise<VCListResponse[]>;
-  getVCById(accountId: string, vcId: string): Promise<VCDetailsResponse>;
-  uploadVCFromQR(accountId: string, qrData: string): Promise<UploadResponse>;
+  getAllVCs(accountId: string, token: string): Promise<VCListResponse[]>;
+  getVCById(
+    accountId: string,
+    vcId: string,
+    token: string,
+  ): Promise<VCDetailsResponse>;
+  uploadVCFromQR(
+    accountId: string,
+    qrData: string,
+    token: string,
+  ): Promise<UploadResponse>;
 }
 
 export interface IWalletAdapterWithOtp extends IWalletAdapter {
