@@ -1,7 +1,7 @@
 export interface OnboardUserDto {
   firstName: string;
   lastName: string;
-  externalUserId: string;
+  externalUserId?: string;
   username: string;
   password: string;
   email?: string;
@@ -9,16 +9,20 @@ export interface OnboardUserDto {
 }
 
 export interface OnboardedUserResponse {
-  accountId: string;
-  token: string;
-  did?: string;
-  user: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    username: string;
+  statusCode: number;
+  message: string;
+  data?: {
     accountId: string;
-    status: string;
+    token: string;
+    did?: string;
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      username: string;
+      accountId: string;
+      status: string;
+    };
   };
 }
 
@@ -35,7 +39,7 @@ export interface LoginVerifyDto {
 export interface LoginResponse {
   statusCode: number;
   message: string;
-  data: {
+  data?: {
     token: string;
     accountId: string;
     user: any;
@@ -43,9 +47,12 @@ export interface LoginResponse {
 }
 
 export interface LoginVerifyResponse {
-  token: string;
-  accountId: string;
+  statusCode: number;
   message: string;
+  data?: {
+    token: string;
+    accountId: string;
+  };
 }
 
 export interface ResendOtpDto {
@@ -53,20 +60,25 @@ export interface ResendOtpDto {
 }
 
 export interface ResendOtpResponse {
+  statusCode: number;
   message: string;
 }
 
 export interface VCListResponse {
-  id: string;
-  name: string;
-  issuer: string;
-  issuedAt: string;
+  statusCode: number;
+  message: string;
+  data?: Array<{
+    id: string;
+    name: string;
+    issuer: string;
+    issuedAt: string;
+  }>;
 }
 
 export interface VCDetailsResponse {
   statusCode: number;
   message: string;
-  data: {
+  data?: {
     id: string;
     type: string;
     issuer: string;
@@ -75,14 +87,18 @@ export interface VCDetailsResponse {
 }
 
 export interface UploadResponse {
-  status: string;
-  vcId: string;
+  statusCode: number;
+  message: string;
+  data?: {
+    status: string;
+    vcId: string;
+  };
 }
 
 export interface IWalletAdapter {
   onboardUser(data: OnboardUserDto): Promise<OnboardedUserResponse>;
   login(data: LoginRequestDto): Promise<LoginResponse>;
-  getAllVCs(accountId: string, token: string): Promise<VCListResponse[]>;
+  getAllVCs(accountId: string, token: string): Promise<VCListResponse>;
   getVCById(
     accountId: string,
     vcId: string,
